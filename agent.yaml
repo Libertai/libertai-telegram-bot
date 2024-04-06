@@ -1,0 +1,35 @@
+# Everything having to LLM resources and parameterizing same
+model:
+  name: "Nouse-Hermes-2-Pro"
+  api_url: "https://altostratus.everythingwilldecentrali.se/vm/5e413862959ee4e48dda56f9efa0f128e93fb7b0dd6ce660f89172c6f2c96b88/completion"
+  engine: "llamacpp"
+
+  # Max Token count of prompts
+  max_prompt_tokens: 16384
+  # Max Token count of completions
+  max_completion_tokens: 250
+
+  # Model parameterizing
+  temperature: 0.7
+  sampler_order: [6, 0, 1, 3, 4, 2, 5]
+  top_p: 0.9
+  top_k: 40
+
+# Agent prompt configuration
+agent:
+  # Max number of attempts to complete on a prompt
+  max_completion_tries: 3
+  # Max number of times the agent can call back to itself
+  max_self_recurse_depth: 5
+  # System Prompt Template. See the default template for further info
+  system_prompt_template: "./templates/system.yaml"
+
+# ChatML configuration
+chat_ml:
+  user_prepend: "<|im_start|>"
+  user_append: "<|im_end|>"
+  stop_sequences:
+    - "<|im_end|>"
+    - "<|endoftext|>"
+    - "</assistant"
+    - "</user"
