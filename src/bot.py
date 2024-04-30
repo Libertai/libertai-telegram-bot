@@ -32,29 +32,28 @@ except Exception as e:
 
 ## State Management ##
 
+BOT_NAMES = [
+    "chatbot",
+    "chat-bot",
+    "chat bot",
+    "chatbot",
+    "chat-bot",
+    "chat bot",
+    "bot",
+    "assistant",
+    "ai",
+]
+
 
 # Set the bot's actual name and all of the potential names it might be called
 def set_bot_name(name: str):
     # Set the name of the bot on the agent -- this is it's telegram username and persona name
     AGENT.set_name(name)
-    # Common monikers for the chat bot or what one might call it
-    #  We'll use this as a base to build a simple response filter
-    names = [
-        "chatbot",
-        "chat-bot",
-        "chat bot",
-        "chatbot",
-        "chat-bot",
-        "chat bot",
-        "bot",
-        "assistant",
-        "ai",
-    ]
 
-    names.append(name)
-    bot_names = []
+    BOT_NAMES.append(name)
+    names = BOT_NAMES.copy()
     for n in names:
-        bot_names.extend(
+        BOT_NAMES.extend(
             [
                 n,
                 n.lower(),
@@ -71,13 +70,8 @@ def set_bot_name(name: str):
                 # Missing letters at the edges of words
                 n[1:],
                 n[:-1],
-                # apped letters at the edges of words
-                n[1:] + n[0],
-                n[-1] + n[:-1],
             ]
         )
-    global BOT_NAMES
-    BOT_NAMES = bot_names
 
 
 ## Handlers ##
@@ -160,20 +154,20 @@ async def text_message_handler(message: telebot_types.Message):
         # Determine if the message is meant for the bot
         # If the message is not a private message, check if the message mentions the bot
         if message.chat.type not in ["private"]:
-            # Don't let the bot respond to messages which don't mention the bot
-            found = False
-            for target in BOT_NAMES:
-                if target in message.text:
-                    found = True
-                    break
-            if not found:
-                return None
-            # TODO: does this ever get triggered?
-            # Don't let the bot respond to messages that are replies to itself
-            if (
-                message.reply_to_message is not None
-            ) and message.reply_to_message.from_user.username == AGENT.name():
-                return None
+            # Check if this isn't a reply to the bot
+            # If it is a reply to the bot, then we should respond
+            if not (
+                (message.reply_to_message is not None)
+                and message.reply_to_message.from_user.username == AGENT.name()
+            ):
+                # Don't let the bot respond to messages which don't mention the bot
+                found = False
+                for target in BOT_NAMES:
+                    if target in message.text:
+                        found = True
+                        break
+                if not found:
+                    return None
 
         # Send an initial response
         result = "I'm thinking..."
