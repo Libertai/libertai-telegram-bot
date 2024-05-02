@@ -195,8 +195,8 @@ async def text_message_handler(message: telebot_types.Message):
             )
     except Exception as e:
         span.error(f"handle_text_message(): Error handling text message: {e}")
-        if reply is None:
-            await BOT.reply_to(message, "I'm sorry, I got confused. Please try again.")
+        # if reply is None:
+        #     await BOT.reply_to(message, "I'm sorry, I got confused. Please try again.")
     finally:
         return None
 
