@@ -91,14 +91,14 @@ def get_current_cryptocurrency_price_usd(symbol: str) -> dict | None:
         return None
 
 @tool
-def get_cryptocurrency_info(symbol: str, market_data: bool=False) -> dict | None:
+def get_cryptocurrency_info(symbol: str) -> dict | None:
     """
-    Get the informations about a cryptocurrency. It includes where it's listed, in what categories it is, the socials urls (twitter, telegram, homepage...).
-    You can get the market data as well (optional, includes information like the market cap, price, atl, ath...).
+    Get the informations about a cryptocurrency. It includes where it's listed,
+    in what categories it is, the socials urls (twitter, telegram, homepage...), the market data as well (includes information like the market cap, price, atl, ath...).
     """
 
     url = (
-        f"https://api.coingecko.com/api/v3/coins/{symbol}?localization=false&tickers=false&market_data={market_data and 'true' or 'false'}&community_data=false&developer_data=false&sparkline=false"
+        f"https://api.coingecko.com/api/v3/coins/{symbol}?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false"
     )
     response = requests.get(url)
     if response.status_code == 200:
