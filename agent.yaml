@@ -1,7 +1,7 @@
 # Everything having to LLM resources and parameterizing same
 model:
   name: "Nouse-Hermes-2-Pro"
-  api_url: "https://altostratus.everythingwilldecentrali.se/vm/5e413862959ee4e48dda56f9efa0f128e93fb7b0dd6ce660f89172c6f2c96b88/completion"
+  api_url: "https://curated.aleph.cloud/vm/84df52ac4466d121ef3bb409bb14f315de7be4ce600e8948d71df6485aa5bcc3/completion"
   engine: "llamacpp"
 
   # Max Token count of prompts
