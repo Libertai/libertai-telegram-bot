@@ -27,7 +27,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     # NOTE: Api docs says that a username maybe None, but we'll assume that it's always present
     # This will make it more straightforward in enforcing the unique constraint
-    username = Column(String, unique=True, nullable=False)
+    username = Column(String, nullable=True)
     first_name = Column(String)
     last_name = Column(String)
     language_code = Column(String)
