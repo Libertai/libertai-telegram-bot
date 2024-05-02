@@ -21,7 +21,7 @@ LOGGER = Logger(CONFIG.log_path, CONFIG.debug)
 
 try:
     LOGGER.info("Setting up Bot...")
-    BOT = async_telebot.AsyncTeleBot(CONFIG.tg_token)
+    BOT = async_telebot.AsyncTeleBot(CONFIG.tg_token, parse_mode="MARKDOWN")
     LOGGER.info("Setting up AsyncDatabase...")
     DATABASE = AsyncDatabase(CONFIG.database_path)
     LOGGER.info("Setting up Agent...")
