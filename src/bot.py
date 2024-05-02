@@ -34,14 +34,8 @@ except Exception as e:
 
 BOT_NAMES = [
     "chatbot",
-    "chat-bot",
-    "chat bot",
-    "chatbot",
-    "chat-bot",
-    "chat bot",
     "bot",
     "assistant",
-    "ai",
 ]
 
 
@@ -51,27 +45,27 @@ def set_bot_name(name: str):
     AGENT.set_name(name)
 
     BOT_NAMES.append(name)
-    names = BOT_NAMES.copy()
-    for n in names:
-        BOT_NAMES.extend(
-            [
-                n,
-                n.lower(),
-                n.upper(),
-                # bunch of potential misspellings
-                n.replace(" ", ""),
-                n.replace("-", ""),
-                n.replace(" ", "-"),
-                n.replace("-", " "),
-                n.replace(" ", "_"),
-                n.replace("_", " "),
-                n.replace("_", "-"),
-                n.replace("-", "_"),
-                # Missing letters at the edges of words
-                n[1:],
-                n[:-1],
-            ]
-        )
+    # names = BOT_NAMES.copy()
+    # for n in names:
+    #     BOT_NAMES.extend(
+    #         [
+    #             n,
+    #             n.lower(),
+    #             n.upper(),
+    #             # bunch of potential misspellings
+    #             n.replace(" ", ""),
+    #             n.replace("-", ""),
+    #             n.replace(" ", "-"),
+    #             n.replace("-", " "),
+    #             n.replace(" ", "_"),
+    #             n.replace("_", " "),
+    #             n.replace("_", "-"),
+    #             n.replace("-", "_"),
+    #             # Missing letters at the edges of words
+    #             n[1:],
+    #             n[:-1],
+    #         ]
+    #     )
 
 
 ## Handlers ##
@@ -164,6 +158,7 @@ async def text_message_handler(message: telebot_types.Message):
                 found = False
                 for target in BOT_NAMES:
                     if target in message.text:
+                        LOGGER.info(f"Message mentions bot: {target}")
                         found = True
                         break
                 if not found:
