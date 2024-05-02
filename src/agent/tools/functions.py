@@ -94,7 +94,7 @@ def get_current_cryptocurrency_price_usd(symbol: str) -> dict | None:
 def get_cryptocurrency_info(symbol: str) -> dict | None:
     """
     Get the informations about a cryptocurrency. It includes where it's listed,
-    in what categories it is, the socials urls (twitter, telegram, homepage...), the market data as well (includes information like the market cap, price, atl, ath...).
+    in what categories it is, the socials urls (twitter, telegram, homepage...), the market data as well in USD (includes information like the market cap, price, atl, ath...).
     """
 
     url = (
@@ -103,6 +103,12 @@ def get_cryptocurrency_info(symbol: str) -> dict | None:
     response = requests.get(url)
     if response.status_code == 200:
         output = response.json()
+        if 'market_data' in output:
+            # let's keep only the usd price on all values that have currencies inside market_data
+            for key, value in output['market_data'].items():
+                if isinstance(value, dict):
+                    if 'usd' in value:
+                        output['market_data'][key] = value['usd']
         # CoinGecko returns an empty dictionary if the coin doesn't exist -- fun :upside_down_face:
         if output == {}:
             return None
