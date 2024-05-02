@@ -90,6 +90,26 @@ def get_current_cryptocurrency_price_usd(symbol: str) -> dict | None:
     else:
         return None
 
+@tool
+def get_cryptocurrency_info(symbol: str, market_data: bool=False) -> dict | None:
+    """
+    Get the informations about a cryptocurrency. It includes where it's listed, in what categories it is, the socials urls (twitter, telegram, homepage...).
+    You can get the market data as well (optional, includes information like the market cap, price, atl, ath...).
+    """
+
+    url = (
+        f"https://api.coingecko.com/api/v3/coins/{symbol}?localization=false&tickers=false&market_data={market_data and 'true' or 'false'}&community_data=false&developer_data=false&sparkline=false"
+    )
+    response = requests.get(url)
+    if response.status_code == 200:
+        output = response.json()
+        # CoinGecko returns an empty dictionary if the coin doesn't exist -- fun :upside_down_face:
+        if output == {}:
+            return None
+        return output
+    else:
+        return None
+
 
 def get_tools() -> List[dict]:
     """
@@ -102,6 +122,7 @@ def get_tools() -> List[dict]:
         duckduckgo_search_answer,
         get_current_stock_price,
         get_current_cryptocurrency_price_usd,
+        get_cryptocurrency_info
     ]
 
     tools = [convert_to_openai_tool(f) for f in functions]
