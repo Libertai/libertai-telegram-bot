@@ -7,7 +7,7 @@ model:
   # Max Token count of prompts
   max_prompt_tokens: 16384
   # Max Token count of completions
-  max_completion_tokens: 250
+  max_completion_tokens: 500
 
   # Model parameterizing
   temperature: 0.7

@@ -21,6 +21,9 @@ class Config:
             raise Exception("Setting `TG_TOKEN` is required")
         self.tg_token = tg_token
 
+        searchapi_token = os.getenv("SEARCHAPI_TOKEN")
+        self.searchapi_token = searchapi_token
+
         # Set the Database URL. Default to in-memory for now
         self.database_path = os.getenv("DATABASE_PATH", ":memory:")
 
