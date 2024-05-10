@@ -44,6 +44,31 @@ def google_search(query):
     return organic_results
 
 @tool
+def get_text_from_page(url):
+    """ Get the text from a page. 
+    Args:
+        url (str): The URL of the page to get the text from.
+    Returns:
+        str: The text from the page."""
+    r = requests.get(url)
+    text = r.text
+    # now we scrape all the html and crap to keep only the text
+    from bs4 import BeautifulSoup
+    soup = BeautifulSoup(text, 'html.parser')
+    # kill all script and style elements
+    for script in soup(["script", "style"]):
+        script.decompose()    # rip it out
+    # get text
+    text = soup.get_text()
+    # break into lines and remove leading and trailing space on each
+    lines = (line.strip() for line in text.splitlines())
+    # break multi-headlines into a line each
+    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+    # drop blank lines
+    text = '\n'.join(chunk for chunk in chunks if chunk)
+    return text
+
+@tool
 def duckduckgo_get_answer(query):
     """ Get an answer from DuckDuckGo's Instant Answer API.
     Args:
@@ -197,6 +222,7 @@ def get_tools() -> List[dict]:
         # duckduckgo_search_text,
         # duckduckgo_search_answer,
         google_search,
+        get_text_from_page,
         duckduckgo_get_answer,
         get_current_stock_price,
         get_current_cryptocurrency_price_usd,
