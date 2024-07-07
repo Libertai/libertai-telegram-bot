@@ -10,6 +10,7 @@ from .utils import (
 from .functions import (
     get_tools,
 )
+from logger import MessageSpan
 
 # NOTE: the sys path append is necessary to import the functions module
 sys.path.append(os.path.join(os.path.dirname(__file__), "."))
@@ -44,7 +45,7 @@ class ToolExecutor:
         return results_dict
 
     def handle_completion(
-        self, completion: str, depth: int, span, line_separator="\n"
+        self, completion: str, depth: int, span: MessageSpan, line_separator="\n"
     ) -> str | None:
         try:
             tool_calls, error_message = self.process_completion_and_validate(completion)

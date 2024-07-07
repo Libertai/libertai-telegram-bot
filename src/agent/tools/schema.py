@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Dict, Literal, Optional
+from typing import Dict, Literal, Optional
 
 class FunctionCall(BaseModel):
     arguments: dict
