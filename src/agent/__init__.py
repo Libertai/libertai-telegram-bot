@@ -305,7 +305,7 @@ class Agent:
                     )
                     raise e
                 finally:
-                    # If ther's nothing to do, return the completion
+                    # If there's nothing to do, return the completion
                     if tool_message is None:
                         total_time = time.time() - start
                         # Log
