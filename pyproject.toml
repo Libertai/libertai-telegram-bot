@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "libertai-telegram-bot"
+version = "0.1.0"
+description = ""
+authors = ["LibertAI team <hello@libertai.io>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+libertai-agents = "0.1.0"
+telebot = "^0.0.5"
+sqlalchemy = "^2.0.36"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.1"
+ruff = "^0.6.0"
+
+[tool.ruff]
+lint.select = ["C", "E", "F", "I", "W"]
+lint.ignore = ["E501"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
