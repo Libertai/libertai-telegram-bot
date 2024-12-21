@@ -1,20 +1,23 @@
+import asyncio
+import datetime
+
 from sqlalchemy import (
     Column,
-    Integer,
-    String,
     DateTime,
     ForeignKey,
+    Integer,
+    String,
     create_engine,
-    select,
     delete,
+    select,
 )
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import joinedload, relationship, sessionmaker
 from sqlalchemy.schema import UniqueConstraint
-from sqlalchemy.orm import sessionmaker, relationship, joinedload
 from telebot import types as telebot_types
-import datetime
-import asyncio
+
+from src.logger import MessageSpan
 
 Base = declarative_base()
 
@@ -22,7 +25,7 @@ Base = declarative_base()
 # At the moment all of our fields are the same, allowing us to interchange telebot types with our database types
 
 
-class User(Base):
+class User(Base):  # type: ignore
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
     # NOTE: Api docs says that a username maybe None, but we'll assume that it's always present
@@ -34,7 +37,7 @@ class User(Base):
     messages = relationship("Message", back_populates="from_user")
 
 
-class Message(Base):
+class Message(Base):  # type: ignore
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True)
@@ -60,10 +63,10 @@ class Message(Base):
 
 # Simple Synchronous Database for setting up the database
 class SyncDatabase:
-    def __init__(self, database_path):
+    def __init__(self, database_path: str):
         database_url = f"sqlite:///{database_path}"
         self.engine = create_engine(database_url)
-        self.Session = sessionmaker(bind=self.engine)
+        self.session = sessionmaker(bind=self.engine)
         Base.metadata.create_all(self.engine)
 
 
@@ -71,7 +74,7 @@ class AsyncDatabase:
     def __init__(self, database_path):
         database_url = f"sqlite+aiosqlite:///{database_path}"
         self.engine = create_async_engine(database_url)
-        self.AsyncSession = sessionmaker(
+        self.async_session = async_sessionmaker(
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
         # If this is an in-memory database, we need to create the tables
@@ -86,9 +89,9 @@ class AsyncDatabase:
     async def add_message(
         self,
         message: telebot_types.Message,
-        use_edit_date=False,
-        reply_to_message_id=None,
-        span=None,
+        use_edit_date: bool = False,
+        reply_to_message_id: int | None = None,
+        span: MessageSpan | None = None,
     ):
         """
         Add a message to the database
@@ -100,7 +103,7 @@ class AsyncDatabase:
         span: The span to use for tracing. If None, no tracing is done
         """
 
-        async with self.AsyncSession() as session:
+        async with self.async_session() as session:
             try:
                 async with session.begin():
                     user = await session.execute(
@@ -140,7 +143,13 @@ class AsyncDatabase:
                     )
                 raise e
 
-    async def get_chat_last_messages(self, chat_id, limit=10, offset=0, span=None):
+    async def get_chat_last_messages(
+        self,
+        chat_id: int,
+        limit: int = 10,
+        offset: int = 0,
+        span: MessageSpan | None = None,
+    ):
         """
         Get the last messages in a chat in batches
 
@@ -150,7 +159,7 @@ class AsyncDatabase:
         span: The span to use for tracing. If None, no tracing is done
         """
         try:
-            async with self.AsyncSession() as session:
+            async with self.async_session() as session:
                 result = await session.execute(
                     select(Message)
                     .options(joinedload(Message.from_user))
@@ -175,14 +184,14 @@ class AsyncDatabase:
                 )
             raise e
 
-    async def clear_chat_history(self, chat_id, span=None):
+    async def clear_chat_history(self, chat_id: int, span: MessageSpan | None = None):
         """
         Clear the chat history
 
         chat_id: The chat ID to clear the history of
         """
         try:
-            async with self.AsyncSession() as session:
+            async with self.async_session() as session:
                 async with session.begin():
                     await session.execute(
                         delete(Message).where(Message.chat_id == chat_id)
@@ -190,6 +199,6 @@ class AsyncDatabase:
         except Exception as e:
             if span:
                 span.error(
-                    f"AysncDatabase::clear_chat_history(): Error clearing chat history: {e}"
+                    f"AsyncDatabase::clear_chat_history(): Error clearing chat history: {e}"
                 )
             raise e
