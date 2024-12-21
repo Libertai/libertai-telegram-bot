@@ -1,5 +1,6 @@
 import logging
 import os
+from logging import FileHandler, LogRecord, StreamHandler
 
 from telebot import types as telebot_types
 
@@ -7,26 +8,28 @@ from telebot import types as telebot_types
 # Log Formatter
 # Used to trace events that span the handling of a message within a chat
 class LogFormatter(logging.Formatter):
-    def format(self, record):
+    def format(self, record: LogRecord):
+        new_record = record
+
         if hasattr(record, "chat_id"):
-            record.chat_id = record.chat_id
-        # Note: this should never happen, but if it does, we'll just set the chat ID and message ID to N/A
+            new_record.chat_id = record.chat_id
         else:
-            record.chat_id = "N/A"
+            # This should never happen, but if it does, we'll just set the chat ID to N/A
+            new_record.chat_id = "N/A"
 
         if hasattr(record, "message_id"):
-            record.message_id = record.message_id
-        # Note: this should never happen, but if it does, we'll just set the chat ID and message ID to N/A
+            new_record.message_id = record.message_id
         else:
-            record.message_id = "N/A"
+            # This should never happen, but if it does, we'll just set the message ID to N/A
+            new_record.message_id = "N/A"
 
-        return super().format(record)
+        return super().format(new_record)
 
 
 class Logger:
     logger: logging.Logger
 
-    def __init__(self, log_path=None, debug=False):
+    def __init__(self, log_path: str | None = None, debug: bool = False):
         """
         Initialize a new Log instance
         - log_path - where to send output. If `None` logs are sent to the console
@@ -49,6 +52,7 @@ class Logger:
         else:
             logging.basicConfig(level=logging.INFO)
 
+        handler: FileHandler | StreamHandler
         # Set where to send logs
         if log_path is not None and log_path.strip() != "":
             # Create parent directories if they don't exist
@@ -70,7 +74,12 @@ class Logger:
     def get_span(self, message: telebot_types.Message):
         return MessageSpan(self, message.chat.id, message.message_id)
 
-    def warn(self, message, chat_id=None, message_id=None):
+    def warn(
+        self,
+        message: str,
+        chat_id: int | None = None,
+        message_id: int | None = None,
+    ):
         extra = {}
         if chat_id:
             extra["chat_id"] = chat_id
@@ -78,7 +87,12 @@ class Logger:
             extra["message_id"] = message_id
         self.logger.warning(message, extra=extra)
 
-    def debug(self, message, chat_id=None, message_id=None):
+    def debug(
+        self,
+        message: str,
+        chat_id: int | None = None,
+        message_id: int | None = None,
+    ):
         extra = {}
         if chat_id:
             extra["chat_id"] = chat_id
@@ -87,7 +101,12 @@ class Logger:
 
         self.logger.debug(message, extra=extra)
 
-    def info(self, message, chat_id=None, message_id=None):
+    def info(
+        self,
+        message: str,
+        chat_id: int | None = None,
+        message_id: int | None = None,
+    ):
         extra = {}
         if chat_id:
             extra["chat_id"] = chat_id
@@ -96,7 +115,12 @@ class Logger:
 
         self.logger.info(message, extra=extra)
 
-    def error(self, message, chat_id=None, message_id=None):
+    def error(
+        self,
+        message: str,
+        chat_id: int | None = None,
+        message_id: int | None = None,
+    ):
         extras = {}
         if chat_id:
             extras["chat_id"] = chat_id
@@ -107,19 +131,19 @@ class Logger:
 
 
 class MessageSpan:
-    def __init__(self, logger, chat_id, message_id):
+    def __init__(self, logger: Logger, chat_id: int, message_id: int):
         self.logger = logger
         self.chat_id = chat_id
         self.message_id = message_id
 
-    def warn(self, message):
+    def warn(self, message: str):
         self.logger.warn(message, chat_id=self.chat_id, message_id=self.message_id)
 
-    def debug(self, message):
+    def debug(self, message: str):
         self.logger.debug(message, chat_id=self.chat_id, message_id=self.message_id)
 
-    def info(self, message):
+    def info(self, message: str):
         self.logger.info(message, chat_id=self.chat_id, message_id=self.message_id)
 
-    def error(self, message):
+    def error(self, message: str):
         self.logger.error(message, chat_id=self.chat_id, message_id=self.message_id)
