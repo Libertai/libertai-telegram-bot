@@ -5,7 +5,6 @@ source venv/bin/activate
 source .env
 export DATABASE_PATH=:memory:
 export DEBUG=True
-export LOG_PATH=
 python3 src/main.py
 
 # Deactivate the virtual environment
