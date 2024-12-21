@@ -49,6 +49,7 @@ class Logger:
             # Hide debug logs from other libraries
             logging.getLogger("asyncio").setLevel(logging.WARNING)
             logging.getLogger("aiosqlite").setLevel(logging.WARNING)
+            logging.getLogger("urllib3").setLevel(logging.WARNING)
         else:
             logging.basicConfig(level=logging.INFO)
 
@@ -68,6 +69,7 @@ class Logger:
         if logger.hasHandlers():
             logger.handlers.clear()
         logger.addHandler(handler)
+        logger.propagate = False
 
         self.logger = logger
 

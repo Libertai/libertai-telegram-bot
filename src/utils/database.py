@@ -17,7 +17,7 @@ from sqlalchemy.orm import joinedload, relationship, sessionmaker
 from sqlalchemy.schema import UniqueConstraint
 from telebot import types as telebot_types
 
-from src.logger import MessageSpan
+from src.utils.logger import MessageSpan
 
 Base = declarative_base()
 
