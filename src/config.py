@@ -5,6 +5,7 @@ from libertai_agents.agents import ChatAgent
 from libertai_agents.models import get_model
 from telebot import async_telebot
 from telebot.async_telebot import AsyncTeleBot
+from telebot.types import User
 
 from src.utils.database import AsyncDatabase
 from src.utils.logger import Logger
@@ -16,6 +17,9 @@ class _Config:
     BOT: AsyncTeleBot
     DATABASE: AsyncDatabase
     AGENT: ChatAgent
+
+    # Data that will be set at the beginning of the agent loop and shouldn't be used before
+    BOT_INFO: User
 
     def __init__(self):
         load_dotenv()

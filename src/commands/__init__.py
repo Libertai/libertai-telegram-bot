@@ -2,6 +2,7 @@ from telebot.types import BotCommand, BotCommandScopeDefault, Message
 
 from src.commands.clear import clear_command_handler
 from src.commands.help import help_command_handler
+from src.commands.message import text_message_handler
 from src.config import config
 
 
@@ -18,16 +19,22 @@ async def register_commands():
     )
 
 
-# Define the command handlers
+# Define the message and command handlers
+
+
+@config.BOT.message_handler(content_types=["text"])
+async def text_message(msg: Message):
+    result = await text_message_handler(msg)
+    return result
 
 
 @config.BOT.message_handler(commands=["help"])
-async def help_command(message: Message):
-    result = await help_command_handler(message)
+async def help_command(msg: Message):
+    result = await help_command_handler(msg)
     return result
 
 
 @config.BOT.message_handler(commands=["clear"])
-async def clear_command(message: Message):
-    result = await clear_command_handler(message)
+async def clear_command(msg: Message):
+    result = await clear_command_handler(msg)
     return result
