@@ -16,9 +16,7 @@ async def help_command_handler(message: Message):
         for command, description in config.BOT_COMMANDS:
             help_text += f"/{command} - {description}\n"
         await config.BOT.reply_to(message, help_text)
-
-        # Ok
-        return None
     except Exception as e:
         span.error(f"Error handling /help command: {e}")
+    finally:
         return None

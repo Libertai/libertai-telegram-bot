@@ -149,7 +149,7 @@ class AsyncDatabase:
         limit: int = 10,
         offset: int = 0,
         span: MessageSpan | None = None,
-    ):
+    ) -> list[Message]:
         """
         Get the last messages in a chat in batches
 
