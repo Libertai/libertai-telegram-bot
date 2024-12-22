@@ -15,7 +15,7 @@ if [ -z "$LOG_PATH" ]; then
 fi
 
 export DEBUG=False
-python3 src/main.py >/dev/null 2>&1
+python3 -m src.main >/dev/null 2>&1
 
 # Deactivate the virtual environment
 deactivate
