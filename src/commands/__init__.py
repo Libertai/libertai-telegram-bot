@@ -22,12 +22,6 @@ async def register_commands():
 # Define the message and command handlers
 
 
-@config.BOT.message_handler(content_types=["text"])
-async def text_message(msg: Message):
-    result = await text_message_handler(msg)
-    return result
-
-
 @config.BOT.message_handler(commands=["help"])
 async def help_command(msg: Message):
     result = await help_command_handler(msg)
@@ -37,4 +31,10 @@ async def help_command(msg: Message):
 @config.BOT.message_handler(commands=["clear"])
 async def clear_command(msg: Message):
     result = await clear_command_handler(msg)
+    return result
+
+
+@config.BOT.message_handler(content_types=["text"])
+async def text_message(msg: Message):
+    result = await text_message_handler(msg)
     return result

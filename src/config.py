@@ -7,6 +7,7 @@ from telebot import async_telebot
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import User
 
+from src.tools import tools
 from src.utils.database import AsyncDatabase
 from src.utils.logger import Logger
 
@@ -50,7 +51,7 @@ class _Config:
             self.AGENT = ChatAgent(
                 model=get_model("NousResearch/Hermes-3-Llama-3.1-8B"),
                 system_prompt="You are a helpful assistant",
-                tools=[],
+                tools=tools,
                 expose_api=False,
             )
         except Exception as e:
