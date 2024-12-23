@@ -7,13 +7,12 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    create_engine,
     delete,
     select,
 )
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import joinedload, relationship, sessionmaker
+from sqlalchemy.orm import joinedload, relationship
 from sqlalchemy.schema import UniqueConstraint
 from telebot import types as telebot_types
 
@@ -59,17 +58,6 @@ class Message(Base):  # type: ignore
 
 
 # Database Initialization and helpers
-
-
-# Simple Synchronous Database for setting up the database
-class SyncDatabase:
-    def __init__(self, database_path: str):
-        database_url = f"sqlite:///{database_path}"
-        self.engine = create_engine(database_url)
-        self.session = sessionmaker(bind=self.engine)
-        Base.metadata.create_all(self.engine)
-
-
 class AsyncDatabase:
     def __init__(self, database_path):
         database_url = f"sqlite+aiosqlite:///{database_path}"
@@ -85,7 +73,6 @@ class AsyncDatabase:
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
-    # TODO: do we need the reply_to_message_id?
     async def add_message(
         self,
         message: telebot_types.Message,
