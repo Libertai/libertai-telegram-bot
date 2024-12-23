@@ -6,7 +6,7 @@ from src.config import config
 from src.utils.telegram import (
     get_formatted_message_content,
     get_formatted_username,
-    get_mentions_in_message,
+    should_reply_to_message,
 )
 
 # Max number of messages we will pass
@@ -22,7 +22,7 @@ async def text_message_handler(message: telebot_types.Message):
     span = config.LOGGER.get_span(message)
     span.info("Received text message")
 
-    reply: telebot_types.Message | None = None
+    reply: telebot_types.Message | None
 
     try:
         chat_id = message.chat.id
@@ -30,25 +30,7 @@ async def text_message_handler(message: telebot_types.Message):
         # Add the message to the chat history
         await config.DATABASE.add_message(message, span=span)
 
-        # Determine if the message is meant for the bot
-        should_reply = False
-        if message.chat.type == "private":
-            # Always reply to DMs
-            should_reply = True
-        else:
-            if (
-                message.reply_to_message is not None
-                and message.reply_to_message.from_user.username
-                == config.BOT_INFO.username
-            ):
-                # The message is a reply to a message that is the bot
-                should_reply = True
-
-            mentions = get_mentions_in_message(message)
-            if f"@{config.BOT_INFO.username}" in mentions:
-                # Message is mentioning the bot
-                should_reply = True
-
+        should_reply = should_reply_to_message(message)
         if should_reply is False:
             span.info("Message not intended for the bot")
 
