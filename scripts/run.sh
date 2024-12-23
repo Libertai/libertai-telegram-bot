@@ -4,8 +4,8 @@ source venv/bin/activate
 
 source .env
 
-# If the DATABASE_URL environment variable is not set, set a default value
-if [ -z "$DATABASE_PATH" ]; then
+# If the DATABASE_PATH environment variable is not set, set a default value
+if [ -z "DATABASE_PATH" ]; then
 	export DATABASE_PATH=./data/app.db
 fi
 
