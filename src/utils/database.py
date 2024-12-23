@@ -59,15 +59,14 @@ class Message(Base):  # type: ignore
 
 # Database Initialization and helpers
 class AsyncDatabase:
-    def __init__(self, database_path):
+    def __init__(self, database_path: str):
         database_url = f"sqlite+aiosqlite:///{database_path}"
         self.engine = create_async_engine(database_url)
         self.async_session = async_sessionmaker(
             self.engine, expire_on_commit=False, class_=AsyncSession
         )
         # If this is an in-memory database, we need to create the tables
-        if database_path == ":memory:":
-            asyncio.run(self.create_tables())
+        asyncio.run(self.create_tables())
 
     async def create_tables(self):
         async with self.engine.begin() as conn:
@@ -138,7 +137,7 @@ class AsyncDatabase:
         span: MessageSpan | None = None,
     ) -> list[Message]:
         """
-        Get the last messages in a chat in batches
+        Get the last messages in a chat in batches and returns them in desc order
 
         chat_id: The chat ID to get the messages from
         limit: The maximum number of messages to get

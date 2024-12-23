@@ -63,7 +63,7 @@ async def text_message_handler(message: telebot_types.Message):
             chat_id, MESSAGES_NUMBER, span=span
         )
         # Iterate over the messages we've pulled
-        for chat_msg in chat_history:
+        for chat_msg in reversed(chat_history):
             message_username = get_formatted_username(chat_msg.from_user)
             message_content = get_formatted_message_content(chat_msg)
             # TODO: support multiple users with names
@@ -75,6 +75,7 @@ async def text_message_handler(message: telebot_types.Message):
             messages.append(LibertaiMessage(role=role, content=message_content))
 
         # TODO: pass system prompt with chat details when libertai-agents new version released
+        # and also tell it to answer directly (to avoid including "username in reply to username" in its answer)
         async for response_msg in config.AGENT.generate_answer(messages):
             if response_msg.content != result:
                 result = response_msg.content

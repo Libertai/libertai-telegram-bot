@@ -50,6 +50,11 @@ class Logger:
             logging.getLogger("asyncio").setLevel(logging.WARNING)
             logging.getLogger("aiosqlite").setLevel(logging.WARNING)
             logging.getLogger("urllib3").setLevel(logging.WARNING)
+
+            # Tool libraries
+            logging.getLogger("yfinance").setLevel(logging.WARNING)
+            logging.getLogger("peewee").setLevel(logging.WARNING)
+
         else:
             logging.basicConfig(level=logging.INFO)
 
