@@ -6,6 +6,6 @@ from src.tools.finance import (
 )
 
 tools: list[Tool] = [
-    Tool.from_function(get_current_stock_price),
-    Tool.from_function(get_current_cryptocurrency_price_usd),
+    # Tool.from_function(get_current_stock_price),
+    # Tool.from_function(get_current_cryptocurrency_price_usd),
 ]

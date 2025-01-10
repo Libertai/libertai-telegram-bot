@@ -10,7 +10,7 @@ from telebot.types import User
 from src.tools import tools
 from src.utils.database import AsyncDatabase
 from src.utils.logger import Logger
-
+from src.tools.knowledgebase import KnowledgeBase
 
 class _Config:
     BOT_COMMANDS: list[tuple[str, str]]
@@ -31,8 +31,9 @@ class _Config:
         ]
 
         # Logger
-        log_path = os.getenv("LOG_PATH")
+        log_path = os.getenv("LOG_PATH", None)
         debug = os.getenv("DEBUG", "False") == "True"
+
         self.LOGGER = Logger(log_path, debug)
 
         try:
@@ -46,11 +47,13 @@ class _Config:
             database_path = os.getenv("DATABASE_PATH", ":memory:")
             self.DATABASE = AsyncDatabase(database_path)
 
+            self.KNOWLEDGEBASE = KnowledgeBase(os.getenv("KNOWLEDGEBASE_PATH", "knowledgebase.json"))
+
             # LibertAI Agent
             self.LOGGER.info("Setting up agent...")
             self.AGENT = ChatAgent(
                 model=get_model("NousResearch/Hermes-3-Llama-3.1-8B"),
-                system_prompt="You are a helpful assistant",
+                system_prompt="CAPTAIN LASERHAWK world chatbot. Assistant has access to a knowledgebase of documents and can answer questions about the captain laserhawk world.",
                 tools=tools,
                 expose_api=False,
             )

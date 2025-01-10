@@ -35,7 +35,7 @@ def get_formatted_message_content(message: Message) -> str:
         reply_to_username = get_formatted_username(message.reply_to_message.from_user)
         sender = f"{sender} (in reply to {reply_to_username})"
 
-    return f"{sender}\n{message.text}"
+    return sender, message.text
 
 
 def should_reply_to_message(message: Message) -> bool:
