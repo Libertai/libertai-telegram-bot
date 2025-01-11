@@ -92,10 +92,17 @@ class AsyncDatabase:
         async with self.async_session() as session:
             try:
                 async with session.begin():
-                    user = await session.execute(
-                        select(User).filter(User.username == message.from_user.username)
+                    user = (
+                        (
+                            await session.execute(
+                                select(User).filter(
+                                    User.username == message.from_user.username
+                                )
+                            )
+                        )
+                        .scalars()
+                        .first()
                     )
-                    user = user.scalars().first()
                     if not user:
                         user = User(
                             id=message.from_user.id,
@@ -162,7 +169,7 @@ class AsyncDatabase:
 
                 messages = result.scalars().all()
 
-                return messages
+                return list(messages)
         except Exception as e:
             if span:
                 span.error(
