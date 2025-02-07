@@ -2,8 +2,7 @@ import requests
 import yfinance  # type: ignore
 
 
-# TODO: add None in return type once transformers parsing issue is fixed and remove the type ignore
-def get_current_stock_price(symbol: str) -> float:
+def get_current_stock_price(symbol: str) -> float | None:
     """
     Get the current stock price for a given symbol.
 
@@ -21,11 +20,10 @@ def get_current_stock_price(symbol: str) -> float:
         )
         return current_price if current_price else None  # type: ignore
     except Exception as _e:
-        return None  # type: ignore
+        return None
 
 
-# TODO: add None in return type once transformers parsing issue is fixed and remove the type ignore
-def get_current_cryptocurrency_price_usd(symbol: str) -> dict:
+def get_current_cryptocurrency_price_usd(symbol: str) -> dict | None:
     """
     Get current price of a cryptocurrency in USD.
 
@@ -44,7 +42,7 @@ def get_current_cryptocurrency_price_usd(symbol: str) -> dict:
         output = response.json()
         # CoinGecko returns an empty dictionary if the coin doesn't exist
         if output == {}:
-            return None  # type: ignore
+            return None
         return output
     else:
-        return None  # type: ignore
+        return None
