@@ -50,7 +50,6 @@ class _Config:
             self.LOGGER.info("Setting up agent...")
             self.AGENT = ChatAgent(
                 model=get_model("NousResearch/Hermes-3-Llama-3.1-8B"),
-                system_prompt="You are a helpful assistant",
                 tools=tools,
                 expose_api=False,
             )

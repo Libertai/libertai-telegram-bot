@@ -56,9 +56,11 @@ async def text_message_handler(message: telebot_types.Message):
             )
             messages.append(LibertaiMessage(role=role, content=message_content))
 
-        # TODO: pass system prompt with chat details when libertai-agents new version released
-        # and also tell it to answer directly (to avoid including "username in reply to username" in its answer)
-        async for response_msg in config.AGENT.generate_answer(messages):
+        # TODO: pass system prompt with chat details
+        async for response_msg in config.AGENT.generate_answer(
+            messages,
+            system_prompt="You are a helpful assistant. If the first line of a message contains something like 'username (in reply to other_user)', it's an information useful for you, but you should not reproduce this in your answer, just respond with your answer.",
+        ):
             if response_msg.content != result:
                 result = response_msg.content
                 # Update the message
