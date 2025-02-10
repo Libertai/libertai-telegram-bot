@@ -40,7 +40,7 @@ class Logger:
         logger = logging.getLogger(__name__)
         # Set the log formatter
         formatter = LogFormatter(
-            "%(asctime)s - %(name)s - %(levelname)s - %(chat_id)s - %(message_id)s - %(message)s"
+            "%(asctime)s - %(levelname)s - CHAT %(chat_id)s - MSG %(message_id)s - %(message)s"
         )
 
         # Set our debug mode
